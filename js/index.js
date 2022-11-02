@@ -1,6 +1,31 @@
 var staffList = [];
 
+function varlidateForm (){
+  var staffAcount = document.getElementById("tknv").value;
+  var staffName = document.getElementById("name").value;
+  var staffEmail = document.getElementById("email").value;
+  var staffPassword = document.getElementById("password").value;
+  var staffWorkDay = document.getElementById("datepicker").value;
+ 
+
+
+  var isValid = true;
+
+  isValid &= required(staffAcount, "tbTKNV") && checkLength(staffAcount, "tbTKNV", 4, 6);
+  isValid &=  required(staffName, "tbTen") && checkStaffName(staffName, "tbTen");
+  isValid &=  required(staffEmail, "tbEmail") && checkStaffEmail(staffName, "tbEmail");
+  isValid &= required(staffPassword, "tbMatKhau")&& checkLength(staffPassword, "tbMatKhau", 6, 10) && checkStaffPassword(staffPassword,"tbMatKhau");
+  isValid &= required(staffWorkDay, "tbNgay") $$ checkStaffWorkDay (staffWorkDay, "tbNgay");
+
+  
+return isValid;
+  
+}
 function createStaff() {
+  // validate dữ liệu
+  var isValid = varlidateForm();
+if (!isValid) return;
+
   // 1. lấy dữ liệu từ input
   var staffAcount = document.getElementById("tknv").value;
   var staffName = document.getElementById("name").value;
@@ -11,45 +36,33 @@ function createStaff() {
   var staffPosition = document.getElementById("chucvu").value;
   var staffWorkHours = +document.getElementById("gioLam").value;
 
-// validate dữ liệu
- required(staffAcount, "tbTKNV") && checkLength(staffAcount, "tbTKNV", 4, 6);
-
-required(staffName, "tbTen");
-required(staffEmail, "tbEmail");
-required(staffPassword, "tbMatKhau")&& checkLength(staffPassword, "tbMatKhau", 6, 10);
-required(staffWorkDay, "tbNgay");
-required(staffSalary, "tbLuongCB");
-required(staffPosition, "tbChucVu");
-required(staffWorkHours, "tbGiolam");
-
-checkLength(staffPassword, "tbMatKhau", 6, 10);
 
 
 
-  // // 2. kiểm tra tài khoản có trùng ko
-//   for (var i = 0; i < staffList.length; i++) {
-//     if (staffList[i].staffAcount === staffAcount) {
-//       alert("tài khoản đã tồn tại");
-//       return;
-//     }
-//   }
-//   // tạo đối tượng nhân viên từ người dùng nhập
-//   var staff = new Staff(
-//     staffAcount,
-//     staffName,
-//     staffEmail,
-//     staffPassword,
-//     staffWorkDay,
-//     staffSalary,
-//     staffPosition,
-//     staffWorkHours
-//   );
-//   // thêm nhân viên vào danh sách
-//   staffList.push(staff);
-//   // in ds nhân viên ra
-//   renderStaffs();
-//   // lưu ds nhân viên ra localStorage
-//   saveData();
+  // 2. kiểm tra tài khoản có trùng ko
+  for (var i = 0; i < staffList.length; i++) {
+    if (staffList[i].staffAcount === staffAcount) {
+      alert("tài khoản đã tồn tại");
+      return;
+    }
+  }
+  // tạo đối tượng nhân viên từ người dùng nhập
+  var staff = new Staff(
+    staffAcount,
+    staffName,
+    staffEmail,
+    staffPassword,
+    staffWorkDay,
+    staffSalary,
+    staffPosition,
+    staffWorkHours
+  );
+  // thêm nhân viên vào danh sách
+  staffList.push(staff);
+  // in ds nhân viên ra
+  renderStaffs();
+  // lưu ds nhân viên ra localStorage
+  saveData();
  }
 
 function renderStaffs(data) {
@@ -229,3 +242,48 @@ function checkLength(value, spanId, min, max) {
   return  true;
 }
 // pattern
+// regualar expression: biểu thức chính quy
+
+function checkStaffName (value, spanId) {
+var pattern = /^[A-z]+$/g;
+if ( pattern.test(value)) {
+  document.getElementById("spanId").innerHTML = "";
+  return true;
+}
+document.getElementById("spanId").innerHTML = "*chỉ nhận kí tự chữ";
+return false;
+}
+
+function checkStaffEmail (value, spanId) {
+  var pattern = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/g;
+  if ( pattern.test(value)) {
+    document.getElementById("spanId").innerHTML = "";
+    return true;
+  }
+  document.getElementById("spanId").innerHTML = "*nhập đúng email";
+  return false;
+}
+
+function checkStaffPassword (value, spanId) {
+  var pattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8, 20}$/g;
+  if ( pattern.test(value)) {
+    document.getElementById("spanId").innerHTML = "";
+    return true;
+  }
+  document.getElementById("spanId").innerHTML = "*mật Khẩu từ 6-10 ký tự (chứa ít nhất 1 ký tự số, 1 ký tự in hoa, 1 ký tự đặc biệt)";
+  return false;
+}
+
+function checkStaffWorkDay (value, spanId) {
+  var pattern = /^(([1-9]|1[012])[-/.]([1-9]|[12][0-9]|3[01])[-/.](19|20)\d\d)|((1[012]|0[1-9])(3[01]|2\d|1\d|0[1-9])(19|20)\d\d)|((1[012]|0[1-9])[-/.](3[01]|2\d|1\d|0[1-9])[-/.](19|20)\d\d)$/g;
+  if ( pattern.test(value)) {
+    document.getElementById("spanId").innerHTML = "";
+    return true;
+  }
+  document.getElementById("spanId").innerHTML = "*nhập đúng mm/dd/yy";
+  return false;
+}
+
+function checkStaffSalary ( value, spanId) {
+
+}
