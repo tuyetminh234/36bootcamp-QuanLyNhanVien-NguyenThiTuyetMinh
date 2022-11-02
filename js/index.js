@@ -1,6 +1,7 @@
 var staffList = [];
 
 function createStaff() {
+  // 1. lấy dữ liệu từ input
   var staffAcount = document.getElementById("tknv").value;
   var staffName = document.getElementById("name").value;
   var staffEmail = document.getElementById("email").value;
@@ -10,28 +11,46 @@ function createStaff() {
   var staffPosition = document.getElementById("chucvu").value;
   var staffWorkHours = +document.getElementById("gioLam").value;
 
-  for (var i = 0; i < staffList.length; i++) {
-    if (staffList[i].staffAcount === staffAcount) {
-      alert("tài khoản đã tồn tại");
-      return;
-    }
-  }
-  var staff = new Staff(
-    staffAcount,
-    staffName,
-    staffEmail,
-    staffPassword,
-    staffWorkDay,
-    staffSalary,
-    staffPosition,
-    staffWorkHours
-  );
-  staffList.push(staff);
-  // in ds nhân viên ra
-  renderStaffs();
-  // lưu ds nhân viên ra localStorage
-  saveData();
-}
+// validate dữ liệu
+ required(staffAcount, "tbTKNV") && checkLength(staffAcount, "tbTKNV", 4, 6);
+
+required(staffName, "tbTen");
+required(staffEmail, "tbEmail");
+required(staffPassword, "tbMatKhau")&& checkLength(staffPassword, "tbMatKhau", 6, 10);
+required(staffWorkDay, "tbNgay");
+required(staffSalary, "tbLuongCB");
+required(staffPosition, "tbChucVu");
+required(staffWorkHours, "tbGiolam");
+
+checkLength(staffPassword, "tbMatKhau", 6, 10);
+
+
+
+  // // 2. kiểm tra tài khoản có trùng ko
+//   for (var i = 0; i < staffList.length; i++) {
+//     if (staffList[i].staffAcount === staffAcount) {
+//       alert("tài khoản đã tồn tại");
+//       return;
+//     }
+//   }
+//   // tạo đối tượng nhân viên từ người dùng nhập
+//   var staff = new Staff(
+//     staffAcount,
+//     staffName,
+//     staffEmail,
+//     staffPassword,
+//     staffWorkDay,
+//     staffSalary,
+//     staffPosition,
+//     staffWorkHours
+//   );
+//   // thêm nhân viên vào danh sách
+//   staffList.push(staff);
+//   // in ds nhân viên ra
+//   renderStaffs();
+//   // lưu ds nhân viên ra localStorage
+//   saveData();
+ }
 
 function renderStaffs(data) {
   if(!data) data = staffList;
@@ -179,6 +198,8 @@ function updateStaff (){
   renderStaffs();
   saveData();
   document.getElementById("formQLNV").reset();
+  document.getElementById("tknv").disable = false;
+
 }
 
 
@@ -186,3 +207,25 @@ window.onload = function () {
   console.log("window onload");
   getData();
 };
+
+
+// ------------------VALIDATE FUNCTION------------------
+// check required
+function required(value, spanId){
+  if (value.length === 0) {
+  document.getElementById("spanId").innerHTML = "*trường này bắt buộc nhập";
+  return false;
+  }
+  document.getElementById("spanId").innerHTML = "";
+return true;
+}
+// check minlength- maxlength
+function checkLength(value, spanId, min, max) {
+  if (value.length < min || value.length > max) {
+  document.getElementById("spanId").innerHTML = `*độ dài phải từ ${min} đến ${max} kí tự`;
+  return false;
+  }
+  document.getElementById("spanId").innerHTML = "";
+  return  true;
+}
+// pattern
